@@ -46,7 +46,7 @@ done_font = pygame.font.Font(None, 45)
 
 frame_count = 0
 frame_rate = 60
-start_time = 2
+start_time = 180
 start = False
 change_flag = False
 done = False
