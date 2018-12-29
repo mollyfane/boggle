@@ -6,8 +6,9 @@ Created on Fri Dec 28 21:54:35 2018
 """
 
 """
- Show how to put a timer on the screen.
+ Boggle Game
  
+ Drawing from:
  Sample Python/Pygame Programs
  Simpson College Computer Science
  http://programarcadegames.com/
@@ -17,16 +18,18 @@ Created on Fri Dec 28 21:54:35 2018
  
 import pygame
 import find_letters
+from text_input import InputBox
+from check_word import check
 
 # Define some colors
-BLACK = (0, 0, 155)
+BLUE = (0, 0, 155)
 WHITE = (255, 253, 230)
 RED = (255,40,40)
 
 pygame.init()
  
 # Set the width and height of the screen
-size = [530, 540]
+size = [530, 640]
 screen = pygame.display.set_mode(size)
  
 pygame.display.set_caption("Molly's Boggle Extravaganza")
@@ -43,19 +46,23 @@ done_font = pygame.font.Font(None, 45)
 
 frame_count = 0
 frame_rate = 60
-start_time = 180
+start_time = 2
 start = False
 change_flag = False
 done = False
 hide_letters = True
+is_word = False
+defn = ''
 shuffled_dice = find_letters.boggle()
-
+input_box = InputBox(20, 540, 140, 32)
 # -------- Main Program Loop -----------
 while not game_done:
     for event in pygame.event.get():  # User did something
+        if done == True:
+            input_box.handle_event(event)
         if event.type == pygame.QUIT:  # If user clicked close
             game_done = True  # Flag that we are done so we exit this loop
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN and input_box.active == False:
             if event.key == pygame.K_n:
                 start = True
                 change_flag = True
@@ -72,7 +79,7 @@ while not game_done:
                     hide_letters = False
                     
     # Set the screen background
-    screen.fill(BLACK)
+    screen.fill(BLUE)
  
     # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
 
@@ -85,7 +92,7 @@ while not game_done:
             pygame.draw.rect(screen, WHITE, (20+99*i,40+99*j,94,94), 0)
             if(hide_letters == False):
                 the_letter = shuffled_dice[i,j]
-                letter = dice_font.render(the_letter, True, BLACK)
+                letter = dice_font.render(the_letter, True, BLUE)
                 if the_letter == 'I':
                     screen.blit(letter, [55+99*i, 50+99*j])
                 elif the_letter == 'T':
@@ -98,7 +105,16 @@ while not game_done:
         text = done_font.render('DONE', True, RED)
         for i in range(5):
             for j in range(5):
-                screen.blit(text, [20+99*i,110+99*j,94,94])
+                screen.blit(text, [20+99*i,110+99*j])
+        input_box.update()
+        input_box.draw(screen)
+        if not(input_box.return_word == ''):
+            if(input_box.new_word == True):
+                is_word, defn = check(input_box.return_word)
+                input_box.new_word = False
+            for i in range(len(defn)):
+                text = font.render(defn[i], True, WHITE)
+                screen.blit(text, [20, 585+15*i])
 
     if(start == True):
         if(change_flag == True):
@@ -142,3 +158,4 @@ while not game_done:
 # Be IDLE friendly. If you forget this line, the program will 'hang'
 # on exit.
 pygame.quit()
+quit()
