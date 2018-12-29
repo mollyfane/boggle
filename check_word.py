@@ -29,7 +29,7 @@ def strip(defn):
     return(''.join(out))
 
 def split(defn):
-    stop_length = 50
+    stop_length = 65
     length = len(defn)
     char_list = list(defn)
     lines = []
